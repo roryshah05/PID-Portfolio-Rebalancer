@@ -10,7 +10,7 @@ Proportional–Integral–Derivative (PID) controllers are used in a wide variet
 5. analysis.ipynb - Comprehensive documentation of the project, including an introduction, mathematical foundation, equity curve analysis, statistical analysis, sensitivity analysis, weight drift analysis, and conclusion
 
 ## Methodology
-The PID controller works by using the target and actual weight of any given asset in the portfolio to calculate three terms: proportion, integral and derivative. The control signal u is the sum of these terms, and is the signal to trade a stock, where 'u(t) = Kp * e(t) + Ki * sum(e * dt) + Kd * (e(t) - e(t-1)) / dt'. A full mathematical explanation is available in analysis.ipynb
+The PID controller works by using the target and actual weight of any given asset in the portfolio to calculate three terms: proportion, integral and derivative. The control signal u is the sum of these terms, and is the signal to trade a stock, where u(t) = Kp * e(t) + Ki * sum(e * dt) + Kd * (e(t) - e(t-1)) / dt. A full mathematical explanation is available in analysis.ipynb
 
 ## Results
 1. The PID strategy had significantly less weight drift than the other two strategies, having ~20x more accuracy than the buy and hold strategy and ~5-10x more accuracy than the threshold strategy.
