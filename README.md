@@ -1,4 +1,5 @@
 # PID Portfolio Rebalancer
+### By Rohan Shah
 Proportional–Integral–Derivative (PID) controllers are used in a wide variety of functions across aerospace engineering. Just as an autopilot uses a PID controller to hold a target altitude, this project applies the concept to dynamically rebalance a portfolio, holding it at a target allocation.
 
 ## Architecture
