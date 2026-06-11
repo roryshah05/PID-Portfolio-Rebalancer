@@ -1,5 +1,6 @@
 from pid_controller import PIDController
 from data_pipeline import get_prices
+from markowitz import get_optimal_weights
 import numpy as np
 
 # Initializing parameters
@@ -16,15 +17,22 @@ end = "2026-03-01"
 tickers = ['SPY', 'EFA', 'TLT', 'TIP', 'GLD', 'VNQ']
 
 # Backtest for PID controller
-def run_backtest(target_weight, Kp, Ki, Kd, minintegral, maxintegral, dt, transaction_cost, returns):
+def run_backtest(target_weight=None, Kp=0.5, Ki=0.01, Kd=0.1, minintegral=-1.0, maxintegral=1.0, dt=1, transaction_cost=0.001, returns=None, close=None, window=252, rebalance_freq='MS'):
     portfolio_value = 1.0
     u_tracker = []
     portfolio_value_tracker = []
     dates = []
     weights_tracker = []
 
-    current_weights = target_weight
+    if target_weight is not None:
+        current_weights = target_weight.copy()
+    else:
+        current_weights = np.ones(len(returns.columns)) / len(returns.columns)
+
     pid = PIDController(Kp, Ki, Kd, minintegral, maxintegral)
+
+    if close is not None:
+        optimal_weights = get_optimal_weights(close, window, rebalance_freq)
 
     # Main loop
     returns_array = returns.values
@@ -33,6 +41,14 @@ def run_backtest(target_weight, Kp, Ki, Kd, minintegral, maxintegral, dt, transa
     for i in range(len(returns_array)):
         daily_returns = returns_array[i]
         date = dates_index[i]
+
+        if close is not None:
+            valid_dates = optimal_weights.index[optimal_weights.index <= date]
+            if len(valid_dates) == 0:
+                continue
+            latest_date = valid_dates.max()
+            target_weight = optimal_weights.loc[latest_date].values
+
         if np.any(np.isnan(daily_returns)):
             continue
         current_weights = (current_weights * (1 + daily_returns)) / np.sum((current_weights * (1 + daily_returns))) # Update the current weights based on returns
@@ -107,7 +123,7 @@ def run_threshold(target_weight, transaction_cost, start, end, tickers, threshol
 if __name__ == "__main__":
     close = get_prices(tickers, start, end)
     returns = close.pct_change()
-    u, dates, values, weights = run_backtest(target_weight, Kp, Ki, Kd, minintegral, maxintegral, dt, transaction_cost, returns)
+    u, dates, values, weights = run_backtest(Kp=Kp, Ki=Ki, Kd=Kd, minintegral=minintegral, maxintegral=maxintegral, dt=dt, transaction_cost=transaction_cost, returns=returns, close=close)
     #dates, values, weights = run_buy_and_hold(start, end, tickers)
     #dates, values, weights = run_threshold(target_weight, transaction_cost, start, end, tickers, threshold)
     print(values[:5])
