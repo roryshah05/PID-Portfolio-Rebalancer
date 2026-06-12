@@ -62,7 +62,7 @@ def run_backtest(target_weight=None, Kp=0.5, Ki=0.01, Kd=0.1, minintegral=-1.0, 
         portfolio_value_tracker.append(portfolio_value) # Store the updated portfolio value
         dates.append(date) # Store the updated date
         weights_tracker.append(current_weights.copy()) # Store the updated weights
-    return(u_tracker, dates, portfolio_value_tracker, weights_tracker)
+    return u_tracker, dates, portfolio_value_tracker, weights_tracker
 
 # Buy and Hold strategy comparison
 def run_buy_and_hold(start, end, tickers, target_weight):

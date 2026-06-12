@@ -10,12 +10,12 @@ def get_prices(tickers, start, end):
         warnings.simplefilter("ignore")
         data = yf.download(tickers, start, end, progress=False)
     close = data["Close"]
-    return(close)
+    return close
 
 # Computing price-weighted allocation
 def get_weights(close):
     weight = close.div(close.sum(axis=1), axis=0)
-    return(weight)
+    return weight
 
 if __name__ == "__main__":
     start = "2020-01-01"
